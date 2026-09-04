@@ -21,11 +21,14 @@ app.use(cookieParser());
 import healthcheckRouter from "./routes/healthcheck.routes.js";
 import userRouter from "./routes/user.route.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
-import  conversationRouter  from "./routes/conversation.route.js"
+import  conversationRouter  from "./routes/conversation.route.js";
+import messageRouter from "./routes/message.route.js";
 
 app.use("/api/v1/healthcheck", healthcheckRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/conversations", conversationRouter)
+app.use("/api/v1/conversations", messageRouter);
+
 app.use(errorHandler);
 
 
