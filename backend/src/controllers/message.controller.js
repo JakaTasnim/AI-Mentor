@@ -38,6 +38,17 @@ const createMessage = asyncHandler(async (req, res) => {
         content: content.trim()
     });
 
+    if (conversation.title === "New Conversation") {
+        const generatedTitle =
+            content.trim().length > 40
+                ? `${content.trim().slice(0, 40)}...`
+                : content.trim();
+
+        conversation.title = generatedTitle;
+
+        await conversation.save();
+    }
+
     // 4. Get conversation history
     const messages = await Message.find({
         conversation: conversation._id
@@ -75,9 +86,10 @@ const createMessage = asyncHandler(async (req, res) => {
                 201,
                 {
                     userMessage,
-                    assistantMessage
+                    assistantMessage,
+                    conversation
                 },
-                "AI response generated successfully"
+                "Message created successfully"
             )
         );
 });

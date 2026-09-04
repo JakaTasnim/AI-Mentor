@@ -1,4 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
+import { ApiError } from "../../utils/ApiError.js";
 
 
 const gemini = new GoogleGenAI({
@@ -6,12 +7,32 @@ const gemini = new GoogleGenAI({
 })
 
 const generateGeminiResponse = async (prompt) => {
-    const interaction = await gemini.interactions.create({
-        model: "gemini-3.8-flash",
-        input : prompt
-    });
+    try {
+        const interaction = await gemini.interactions.create({
+            model: "gemini-3.8-flash",
+            input: prompt
+        });
 
-    return interaction.output_text;
+        return interaction.output_text;
+    } catch (error) {
+        console.error("Gemini Error:", error);
+
+        if (
+            error?.status === 429 ||
+            error?.statusCode === 429 ||
+            error?.message?.includes("429")
+        ) {
+            throw new ApiError(
+                429,
+                "AI service quota exceeded. Please try again shortly."
+            );
+        }
+
+        throw new ApiError(
+            500,
+            "AI service is temporarily unavailable."
+        );
+    }
 };
 
 const streamGeminiResponse = async (prompt, onChunk) => {
