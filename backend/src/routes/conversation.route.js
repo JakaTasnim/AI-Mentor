@@ -4,13 +4,14 @@ import {
     createConversation,
     getUserConversations, 
     getConversationById, 
-    deleteConversation 
+    deleteConversation,
+    updateConversation 
 } from "../controllers/conversation.controller.js"
 
 const router = Router();
 
 router.use(verifyJWT);
 router.route("/").post(createConversation).get(getUserConversations);
-router.route("/:conversationId").get(getConversationById).delete(deleteConversation);
+router.route("/:conversationId").get(getConversationById).patch(updateConversation).delete(deleteConversation);
 
 export default router;
